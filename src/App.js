@@ -1,23 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import ImageGrid from "./components/ImageGrid";
+import Modal from "./components/Modal";
+import Title from "./components/Title";
+import UploadForm from "./components/UploadForm";
+import { useAuth } from "./firebase/authContext";
 
 function App() {
+  const [selectedImage, setSelectedImage] = useState(null);
+  const { user, googleSignUp, logout } = useAuth();
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {user ? (
+        <button onClick={logout}>Logout</button>
+      ) : (
+        <button onClick={googleSignUp}>Google Sign Up</button>
+      )}
+      {user && (
+        <div>
+          {/* <h1>{`${user.displayName} and ${user.email}`}</h1> */}
+          <img src={user.photoURL} alt="profile pic" />
+        </div>
+      )}
+
+      <Title />
+      <UploadForm />
+      <ImageGrid setSelectedImage={setSelectedImage} />
+      {selectedImage && (
+        <Modal
+          selectedImage={selectedImage}
+          setSelectedImage={setSelectedImage}
+        />
+      )}
     </div>
   );
 }
